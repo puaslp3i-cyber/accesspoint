@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-950 text-slate-100 selection:bg-cyan-500 selection:text-slate-950">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Pembelajaran Interaktif - Access Point (AP)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#ecfeff',
+                            400: '#22d3ee',
+                            500: '#06b6d4',
+                            600: '#0891b2',
+                            700: '#0e7490',
+                            900: '#164e63',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Keyframe Animations */
+        @keyframes wave-expand {
+            0% { transform: scale(0.2); opacity: 0.9; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+        .animate-wave {
+            animation: wave-expand 2.5s infinite linear;
+        }
+        @keyframes packet-move {
+            0% { offset-distance: 0%; }
+            100% { offset-distance: 100%; }
+        }
+        .glow-cyan {
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.35);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans overflow-x-hidden">
+
+    <!-- Top Header Navigation -->
+    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-wifi"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-400 bg-clip-text text-transparent">
+                        ACCESS POINT LAB
+                    </h1>
+                    <p class="text-[11px] text-slate-400 font-mono">Media Pembelajaran Jaringan Nirkabel</p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="flex items-center overflow-x-auto space-x-1 py-1 px-1 bg-slate-950/60 rounded-xl border border-slate-800 text-xs font-semibold">
+                <button onclick="switchTab('materi')" id="tab-materi" class="tab-btn active px-3.5 py-2 rounded-lg transition-all flex items-center gap-2 bg-cyan-500 text-slate-950 font-bold">
+                    <i class="fa-solid fa-book-open"></i> <span>Materi</span>
+                </button>
+                <button onclick="switchTab('mode')" id="tab-mode" class="tab-btn px-3.5 py-2 rounded-lg transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
+                    <i class="fa-solid fa-sliders"></i> <span>Mode AP</span>
+                </button>
+                <button onclick="switchTab('komparasi')" id="tab-komparasi" class="tab-btn px-3.5 py-2 rounded-lg transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
+                    <i class="fa-solid fa-code-compare"></i> <span>AP vs Router</span>
+                </button>
+                <button onclick="switchTab('simulasi')" id="tab-simulasi" class="tab-btn px-3.5 py-2 rounded-lg transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
+                    <i class="fa-solid fa-network-wired"></i> <span>Simulasi Live</span>
+                </button>
+                <button onclick="switchTab('kuis')" id="tab-kuis" class="tab-btn px-3.5 py-2 rounded-lg transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
+                    <i class="fa-solid fa-graduation-cap"></i> <span>Kuis</span>
+                </button>
+                <button onclick="switchTab('glosarium')" id="tab-glosarium" class="tab-btn px-3.5 py-2 rounded-lg transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
+                    <i class="fa-solid fa-bookmark"></i> <span>Glosarium</span>
+                </button>
+            </nav>
+
+            <div class="flex items-center space-x-2">
+                <button id="audioToggleBtn" onclick="toggleAudio()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700" title="Audio Efek Suara">
+                    <i id="audioIcon" class="fa-solid fa-volume-high text-cyan-400"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
+
+        <!-- ================= TAB 1: MATERI & KONSEP ================= -->
+        <section id="view-materi" class="space-y-6">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden bg-gradient-to-r from-slate-900 via-slate-900 to-cyan-950/40 border border-slate-800 rounded-3xl p-6 md:p-10 shadow-2xl">
+                <div class="absolute -right-12 -top-12 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="max-w-3xl relative z-10">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mb-4">
+                        <i class="fa-solid fa-circle-info"></i> Modul Pembelajaran Utama
+                    </span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3">
+                        Memahami <span class="bg-gradient-to-r from-cyan-400 to-teal-300 bg-clip-text text-transparent">Access Point (AP)</span> & Jaringan Nirkabel
+                    </h2>
+                    <p class="text-slate-300 text-sm md:text-base leading-relaxed mb-6">
+                        Access Point adalah perangkat keras jaringan komputer yang menghubungkan perangkat nirkabel (seperti laptop, smartphone, dan IoT) ke jaringan kabel lokal (LAN) menggunakan sinyal gelombang radio Wi-Fi.
+                    </p>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="#fungsi" class="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-bolt"></i> Jelajahi Fungsi AP
+                        </a>
+                        <a href="#carakerja" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs uppercase tracking-wider border border-slate-700 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-gears"></i> Cara Kerja AP
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4 Pillar Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl hover:border-cyan-500/40 transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-tower-cell"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-base mb-1">Pemancar Sinyal Wi-Fi</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">Mengubah paket data jaringan kabel (Ethernet) menjadi gelombang sinyal radio (2.4GHz / 5GHz / 6GHz).</p>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl hover:border-teal-500/40 transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-expand"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-base mb-1">Perluas Jangkauan</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">Menghilangkan area tanpa sinyal (<em>dead zone</em>) di kantor, kampus, atau gedung bertingkat.</p>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl hover:border-amber-500/40 transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-base mb-1">Keamanan & Autentikasi</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">Mendukung otentikasi kata sandi (WPA2/WPA3), MAC Filtering, serta sistem Captive Portal untuk tamu.</p>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl hover:border-blue-500/40 transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-base mb-1">Koneksi Multi-User</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">Mampu menangani puluhan hingga ratusan perangkat nirkabel secara bersamaan tanpa degradasi performa.</p>
+                </div>
+            </div>
+
+            <!-- Detailed Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Left 2 Columns: Fungsi & Cara Kerja -->
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <!-- Section: Fungsi Utama -->
+                    <div id="fungsi" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center font-bold">1</div>
+                            <h3 class="text-xl font-bold text-white">Fungsi Utama Access Point</h3>
+                        </div>
+                        <ul class="space-y-3 text-sm text-slate-300">
+                            <li class="flex items-start gap-3 bg-slate-950/60 p-3.5 rounded-xl border border-slate-800">
+                                <i class="fa-solid fa-circle-check text-cyan-400 mt-1"></i>
+                                <div>
+                                    <strong class="text-white block">Satu Titik Akses Utama Nirkabel (WLAN Hub)</strong>
+                                    Sebagai gerbang sentral tempat semua smartphone, laptop, dan printer nirkabel terhubung ke jaringan internet lokal.
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-950/60 p-3.5 rounded-xl border border-slate-800">
+                                <i class="fa-solid fa-circle-check text-cyan-400 mt-1"></i>
+                                <div>
+                                    <strong class="text-white block">Meneruskan Sinyal dari Router / Switch</strong>
+                                    Access Point menerima data kabel dari Switch/Router utama lalu memancarkannya secara nirkabel melalui SSID (Service Set Identifier).
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-950/60 p-3.5 rounded-xl border border-slate-800">
+                                <i class="fa-solid fa-circle-check text-cyan-400 mt-1"></i>
+                                <div>
+                                    <strong class="text-white block">Pengaturan Hak Akses & Enkripsi Data</strong>
+                                    Mengontrol hak akses client dengan proteksi sandi WPA2/WPA3 Personal/Enterprise dan enkripsi lalu lintas data udara.
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-950/60 p-3.5 rounded-xl border border-slate-800">
+                                <i class="fa-solid fa-circle-check text-cyan-400 mt-1"></i>
+                                <div>
+                                    <strong class="text-white block">Mendukung Roaming Mulus (Seamless Roaming)</strong>
+                                    Memungkinkan pengguna bergerak di gedung luas tanpa terputus koneksinya saat berpindah dari satu AP ke AP lainnya.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Section: Cara Kerja AP -->
+                    <div id="carakerja" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-lg bg-teal-500/10 text-teal-400 flex items-center justify-center font-bold">2</div>
+                            <h3 class="text-xl font-bold text-white">Cara Kerja Access Point</h3>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Secara sederhana, Access Point bekerja sebagai jembatan (bridge) Layer 2 (Data Link) dalam model OSI, menghubungkan domain fisik kabel dengan frekuensi radio nirkabel.
+                        </p>
+
+                        <!-- Step By Step Diagram -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center relative">
+                                <span class="text-[10px] font-mono text-cyan-400 uppercase font-bold block mb-1">Langkah 1</span>
+                                <i class="fa-solid fa-ethernet text-2xl text-cyan-400 my-2"></i>
+                                <h4 class="font-bold text-xs text-white mb-1">Terima Data Kabel</h4>
+                                <p class="text-[11px] text-slate-400">Router/Switch mengirimkan paket data ke AP melalui kabel LAN Ethernet (RJ45).</p>
+                            </div>
+
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center relative">
+                                <span class="text-[10px] font-mono text-amber-400 uppercase font-bold block mb-1">Langkah 2</span>
+                                <i class="fa-solid fa-radio text-2xl text-amber-400 my-2"></i>
+                                <h4 class="font-bold text-xs text-white mb-1">Konversi ke Radio</h4>
+                                <p class="text-[11px] text-slate-400">AP mengubah paket listrik kabel menjadi gelombang frekuensi radio (2.4GHz / 5GHz).</p>
+                            </div>
+
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center relative">
+                                <span class="text-[10px] font-mono text-emerald-400 uppercase font-bold block mb-1">Langkah 3</span>
+                                <i class="fa-solid fa-mobile-screen-button text-2xl text-emerald-400 my-2"></i>
+                                <h4 class="font-bold text-xs text-white mb-1">Diterima Perangkat</h4>
+                                <p class="text-[11px] text-slate-400">Smartphone/laptop menangkap sinyal Wi-Fi, melakukan autentikasi, dan menerima internet.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Column: Jenis-jenis AP -->
+                <div class="space-y-6">
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">3</div>
+                            <h3 class="text-lg font-bold text-white">Jenis-Jenis Access Point</h3>
+                        </div>
+
+                        <!-- Types List -->
+                        <div class="space-y-3">
+                            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-cyan-500/50 transition-all">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-bold text-sm text-cyan-300 flex items-center gap-2">
+                                        <i class="fa-solid fa-building"></i> Indoor Access Point
+                                    </h4>
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800">Ruangan</span>
+                                </div>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    Didesain khusus untuk pemasangan di dalam gedung/ruangan (plafon/dinding). Fokus pada kapasitas pengguna yang padat dan estetika.
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-emerald-500/50 transition-all">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-bold text-sm text-emerald-300 flex items-center gap-2">
+                                        <i class="fa-solid fa-tree"></i> Outdoor Access Point
+                                    </h4>
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">Tahan Cuaca</span>
+                                </div>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    Dilengkapi sertifikasi tahan air & debu (IP67/IP68). Memiliki daya pancar tinggi dan antena gain besar untuk area terbuka luas.
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-amber-500/50 transition-all">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-bold text-sm text-amber-300 flex items-center gap-2">
+                                        <i class="fa-solid fa-sliders"></i> Standalone AP
+                                    </h4>
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800">Fat AP</span>
+                                </div>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    Dikonfigurasi secara terpisah satu per satu melalui IP web browser. Cocok untuk skala jaringan kecil atau rumah tinggal.
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-blue-500/50 transition-all">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-bold text-sm text-blue-300 flex items-center gap-2">
+                                        <i class="fa-solid fa-sitemap"></i> Controller Managed AP
+                                    </h4>
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-400 border border-blue-800">Fit AP</span>
+                                </div>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    Dikelola secara terpusat melalui Hardware Controller atau Cloud (misal: UniFi, Cisco Meraki, Ruijie Reyee) untuk skala enterprise.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: MODE OPERASI AP ================= -->
+        <section id="view-mode" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 space-y-6">
+                <div>
+                    <span class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest block mb-1">Visualisator Interaktif</span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-white">Mode Operasi Access Point</h2>
+                    <p class="text-slate-400 text-sm mt-1">Pilih salah satu mode operasi di bawah untuk melihat simulasi alur sinyal dan topologi kerjanya secara real-time.</p>
+                </div>
+
+                <!-- Mode Select Buttons -->
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-2.5">
+                    <button onclick="setOperationMode('ap')" id="mode-btn-ap" class="mode-select-btn p-3 rounded-xl border border-cyan-500 bg-cyan-500/10 text-cyan-300 font-bold text-xs flex flex-col items-center gap-2 transition-all">
+                        <i class="fa-solid fa-tower-cell text-xl"></i>
+                        <span>AP Mode (Default)</span>
+                    </button>
+                    <button onclick="setOperationMode('repeater')" id="mode-btn-repeater" class="mode-select-btn p-3 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 font-bold text-xs flex flex-col items-center gap-2 transition-all hover:border-slate-700 hover:text-white">
+                        <i class="fa-solid fa-wifi text-xl"></i>
+                        <span>Repeater Mode</span>
+                    </button>
+                    <button onclick="setOperationMode('bridge')" id="mode-btn-bridge" class="mode-select-btn p-3 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 font-bold text-xs flex flex-col items-center gap-2 transition-all hover:border-slate-700 hover:text-white">
+                        <i class="fa-solid fa-bridge text-xl"></i>
+                        <span>Bridge Mode</span>
+                    </button>
+                    <button onclick="setOperationMode('client')" id="mode-btn-client" class="mode-select-btn p-3 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 font-bold text-xs flex flex-col items-center gap-2 transition-all hover:border-slate-700 hover:text-white">
+                        <i class="fa-solid fa-laptop text-xl"></i>
+                        <span>Client Mode</span>
+                    </button>
+                    <button onclick="setOperationMode('mesh')" id="mode-btn-mesh" class="mode-select-btn p-3 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 font-bold text-xs flex flex-col items-center gap-2 transition-all hover:border-slate-700 hover:text-white">
+                        <i class="fa-solid fa-circle-nodes text-xl"></i>
+                        <span>Mesh Mode</span>
+                    </button>
+                </div>
+
+                <!-- Animated Interactive Diagram Box -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 md:p-8 min-h-[300px] flex flex-col justify-between relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span id="modeDiagramTitle" class="font-mono text-sm font-bold text-cyan-400">Simulasi Mode: Access Point (AP Mode)</span>
+                        </div>
+                        <span id="modeDiagramBadge" class="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-800 text-slate-300">LAN → Nirkabel</span>
+                    </div>
+
+                    <!-- Diagram Topology Stage -->
+                    <div id="diagramCanvas" class="flex items-center justify-around py-8 relative">
+                        <!-- Dynamic content injected via JS -->
+                    </div>
+
+                    <!-- Explanation Detail Box -->
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 mt-6">
+                        <h4 id="modeExpTitle" class="font-bold text-white text-sm mb-1">Penjelasan Mode AP:</h4>
+                        <p id="modeExpDesc" class="text-xs text-slate-300 leading-relaxed">
+                            Mode bawaan di mana Access Point terhubung ke Switch/Router melalui kabel Ethernet. AP memancarkan sinyal Wi-Fi sehingga perangkat nirkabel dapat mengakses jaringan kabel lokal.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: AP VS ROUTER ================= -->
+        <section id="view-komparasi" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 space-y-6">
+                <div>
+                    <span class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest block mb-1">Perbandingan Komprehensif</span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-white">Access Point vs Wireless Router</h2>
+                    <p class="text-slate-400 text-sm mt-1">Banyak yang sering tertukar antara AP dan Router. Pelajari perbedaan fundamental arsitektur keduanya di bawah ini.</p>
+                </div>
+
+                <!-- Comparison Table -->
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left border-collapse text-xs md:text-sm">
+                        <thead class="bg-slate-950 text-slate-300 font-mono">
+                            <tr>
+                                <th class="p-4 border-b border-slate-800">Fitur / Karakteristik</th>
+                                <th class="p-4 border-b border-slate-800 text-cyan-400"><i class="fa-solid fa-wifi mr-1"></i> Access Point (AP)</th>
+                                <th class="p-4 border-b border-slate-800 text-amber-400"><i class="fa-solid fa-router mr-1"></i> Wireless Router</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800 text-slate-300">
+                            <tr class="hover:bg-slate-950/40">
+                                <td class="p-4 font-bold text-white">Fungsi Utama</td>
+                                <td class="p-4">Menyediakan akses nirkabel (Wi-Fi) ke jaringan LAN kabel yang sudah ada.</td>
+                                <td class="p-4">Menghubungkan dua jaringan berbeda (LAN ke WAN/Internet) dan mengarahkan data.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/40">
+                                <td class="p-4 font-bold text-white">Layer OSI</td>
+                                <td class="p-4"><span class="px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 font-mono text-[11px]">Layer 2 (Data Link)</span></td>
+                                <td class="p-4"><span class="px-2 py-0.5 rounded bg-amber-950 text-amber-400 font-mono text-[11px]">Layer 3 (Network)</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/40">
+                                <td class="p-4 font-bold text-white">Server DHCP & NAT</td>
+                                <td class="p-4 text-slate-400"><i class="fa-solid fa-circle-xmark text-rose-400 mr-1"></i> Tidak ada secara bawaan (Hanya melalukan/Pass-through)</td>
+                                <td class="p-4 text-emerald-400"><i class="fa-solid fa-circle-check mr-1"></i> Ya, membagikan IP Address & melakukan translasi IP (NAT)</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/40">
+                                <td class="p-4 font-bold text-white">Port WAN / Modem Direct</td>
+                                <td class="p-4 text-slate-400"><i class="fa-solid fa-circle-xmark text-rose-400 mr-1"></i> Tidak memiliki port WAN khusus</td>
+                                <td class="p-4 text-emerald-400"><i class="fa-solid fa-circle-check mr-1"></i> Memiliki Port WAN untuk langsung terhubung ke Modem ISP</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/40">
+                                <td class="p-4 font-bold text-white">Skalabilitas Jaringan</td>
+                                <td class="p-4 text-emerald-400"><i class="fa-solid fa-circle-check mr-1"></i> Sangat Tinggi (Bisa dipasang ratusan AP dengan 1 Router)</td>
+                                <td class="p-4 text-amber-400">Terbatas (Umumnya hanya 1 Router utama per subnet)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Analogical Infographic -->
+                <div class="p-5 rounded-2xl bg-slate-950 border border-slate-800">
+                    <h3 class="font-bold text-white text-sm mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-lightbulb text-amber-400"></i> Analogi Sederhana dalam Kehidupan Nyata
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs leading-relaxed text-slate-300">
+                        <div class="p-4 rounded-xl bg-slate-900 border border-cyan-500/20">
+                            <strong class="text-cyan-400 block mb-1">Router = Manajer Gerbang Utama / Pos Satpam</strong>
+                            Bertugas memeriksa surat izin masuk (IP address/NAT), memberikan nomor antrean registrasi (DHCP), dan menentukan jalan keluar masuk kompleks.
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-900 border border-amber-500/20">
+                            <strong class="text-amber-400 block mb-1">Access Point = Pengeras Suara / Pintu Lorong</strong>
+                            Bertugas memancarkan instruksi dan memfasilitasi komunikasi nirkabel agar pesan sampai ke setiap ruangan tanpa mengubah aturan gerbang utama.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: SIMULASI LIVE ================= -->
+        <section id="view-simulasi" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest block mb-1">Laboratorium Jaringan Interactive</span>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-white">Simulasi Jaringan Access Point Live</h2>
+                        <p class="text-slate-400 text-sm mt-1">Uji kekuatan sinyal, geser perangkat nirkabel, ubah frekuensi, dan lakukan test PING.</p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="resetSimulation()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all border border-slate-700">
+                            <i class="fa-solid fa-rotate-left mr-1"></i> Reset Position
+                        </button>
+                        <button onclick="triggerPingTest()" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-cyan-500/20">
+                            <i class="fa-solid fa-paper-plane mr-1"></i> Test Ping Paket
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Simulation Control Panel -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-950 p-4 rounded-2xl border border-slate-800 text-xs">
+                    <div>
+                        <label class="block font-bold text-slate-300 mb-1">Frekuensi Band:</label>
+                        <select id="simBandSelect" onchange="updateSimConfig()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none focus:border-cyan-500">
+                            <option value="2.4">2.4 GHz (Jangkauan Luas, Penetrasi Bagus)</option>
+                            <option value="5">5 GHz (Kecepatan Tinggi, Jangkauan Pendek)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-300 mb-1">Daya Puncak AP (TX Power):</label>
+                        <input type="range" id="simPowerRange" min="20" max="100" value="70" oninput="updateSimConfig()" class="w-full accent-cyan-500 mt-2">
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-300 mb-1">Hambatan Dinding (Obstacle):</label>
+                        <button id="toggleWallBtn" onclick="toggleWall()" class="w-full py-2 px-3 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-bold hover:bg-slate-700 transition-colors">
+                            <i class="fa-solid fa-wall-brick mr-1"></i> <span id="wallStatusText">Tambah Dinding Beton</span>
+                        </button>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-300 mb-1">Kualitas Sinyal Client:</label>
+                        <div class="flex items-center space-x-2 pt-1 font-mono">
+                            <div id="signalIndicatorBar" class="h-4 bg-emerald-500 rounded transition-all" style="width: 80%;"></div>
+                            <span id="signalText" class="text-emerald-400 font-bold">-55 dBm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Canvas Stage -->
+                <div id="simCanvasContainer" class="relative w-full h-[380px] bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden cursor-crosshair select-none">
+                    
+                    <!-- Background Grid -->
+                    <div class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b15_1px,transparent_1px),linear-gradient(to_bottom,#1e293b15_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+
+                    <!-- Wall Barrier Element -->
+                    <div id="simWall" class="hidden absolute top-0 bottom-0 left-1/2 w-4 bg-amber-900/80 border-x border-amber-600/50 z-10 flex items-center justify-center">
+                        <span class="text-[9px] font-mono text-amber-300 -rotate-90 tracking-widest uppercase font-bold">Dinding Beton</span>
+                    </div>
+
+                    <!-- Wi-Fi Signal Coverage Circle -->
+                    <div id="wifiSignalCircle" class="absolute rounded-full border-2 border-cyan-500/40 bg-cyan-500/5 pointer-events-none transition-all duration-100 flex items-center justify-center">
+                        <div class="w-full h-full rounded-full border border-cyan-400/20 animate-ping opacity-25"></div>
+                    </div>
+
+                    <!-- Access Point Device (Fixed/Draggable) -->
+                    <div id="deviceAP" class="absolute w-14 h-14 rounded-2xl bg-cyan-950 border-2 border-cyan-400 text-cyan-300 flex flex-col items-center justify-center text-xs font-bold shadow-xl shadow-cyan-500/20 z-20 transition-shadow">
+                        <i class="fa-solid fa-tower-cell text-lg"></i>
+                        <span class="text-[9px]">AP-01</span>
+                    </div>
+
+                    <!-- Laptop Client Device (Draggable) -->
+                    <div id="deviceClient" class="absolute w-14 h-14 rounded-2xl bg-emerald-950 border-2 border-emerald-400 text-emerald-300 flex flex-col items-center justify-center text-xs font-bold shadow-xl shadow-emerald-500/20 z-20 cursor-grab active:cursor-grabbing">
+                        <i class="fa-solid fa-laptop text-lg"></i>
+                        <span class="text-[9px]">Laptop</span>
+                    </div>
+
+                    <!-- Ping Animated Packet -->
+                    <div id="pingPacket" class="hidden absolute w-4 h-4 rounded-full bg-amber-400 border border-white z-30 shadow-lg shadow-amber-400"></div>
+
+                    <!-- Live Hint Overlay -->
+                    <div class="absolute bottom-3 left-3 bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl text-[11px] text-slate-400 pointer-events-none">
+                        <i class="fa-solid fa-hand-pointer text-cyan-400 mr-1"></i> Petunjuk: Drag/geser icon <strong>Laptop</strong> untuk melihat dinamika kekuatan sinyal.
+                    </div>
+                </div>
+
+                <!-- Simulation Output Logs -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 font-mono text-xs text-slate-400 h-24 overflow-y-auto space-y-1" id="simConsole">
+                    <div class="text-cyan-400">[SYSTEM] Simulasi jaringan diinisialisasi. Siap digunakan.</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 5: KUIS EVALUASI ================= -->
+        <section id="view-kuis" class="hidden space-y-6 max-w-3xl mx-auto">
+            
+            <!-- Quiz Start Screen -->
+            <div id="quizStartScreen" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-10 shadow-2xl text-center space-y-6">
+                <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center text-3xl mx-auto">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-white">Kuis & Evaluasi Pemahaman AP</h2>
+                    <p class="text-slate-400 text-sm mt-2 max-w-md mx-auto">
+                        Uji sejauh mana pemahaman kamu mengenai Access Point, fungsi, mode operasi, dan perbedaannya dengan router.
+                    </p>
+                </div>
+
+                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 max-w-xs mx-auto text-left">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Nama Lengkap Peserta:</label>
+                    <input type="text" id="quizPlayerName" placeholder="Masukkan nama kamu..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-cyan-500 text-sm">
+                </div>
+
+                <button onclick="startQuiz()" class="py-3.5 px-8 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold text-xs uppercase tracking-wider transition-all shadow-lg shadow-cyan-500/25">
+                    Mulai Kuis Evaluasi <i class="fa-solid fa-play ml-1"></i>
+                </button>
+            </div>
+
+            <!-- Quiz Interactive Screen -->
+            <div id="quizPlayScreen" class="hidden bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 space-y-6 shadow-2xl">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                    <span id="quizProgressTag" class="px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Soal #1 / 10</span>
+                    <span id="quizScoreTag" class="font-mono text-xs font-bold text-emerald-400">Skor: 0</span>
+                </div>
+
+                <h3 id="quizQuestionPrompt" class="text-lg md:text-xl font-bold text-white">
+                    Pertanyaan kuis akan ditampilkan di sini...
+                </h3>
+
+                <div id="quizOptionsContainer" class="grid grid-cols-1 gap-3">
+                    <!-- Options injected dynamically -->
+                </div>
+
+                <!-- Explanation / Feedback Box -->
+                <div id="quizFeedbackBox" class="hidden p-4 rounded-xl border text-xs leading-relaxed space-y-2">
+                    <h4 id="quizFeedbackTitle" class="font-bold text-sm"></h4>
+                    <p id="quizFeedbackBody" class="text-slate-300"></p>
+                    <button onclick="nextQuizQuestion()" class="mt-2 px-4 py-2 rounded-lg bg-cyan-500 text-slate-950 font-bold uppercase text-[11px] tracking-wider">
+                        Soal Selanjutnya <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Result Screen -->
+            <div id="quizResultScreen" class="hidden bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-10 text-center space-y-6 shadow-2xl">
+                <div class="w-20 h-20 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-4xl mx-auto">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-extrabold text-white">Hasil Evaluasi Pembelajaran</h2>
+                    <p id="quizResultGreeting" class="text-slate-400 text-sm mt-1">Selamat!</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 bg-slate-950 p-6 rounded-2xl border border-slate-800 max-w-md mx-auto">
+                    <div>
+                        <span class="text-xs text-slate-500 uppercase font-bold block mb-1">Nilai Akhir</span>
+                        <span id="quizFinalScore" class="font-mono text-3xl font-black text-cyan-400">0</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-500 uppercase font-bold block mb-1">Status Lulus</span>
+                        <span id="quizStatusText" class="font-mono text-2xl font-black text-emerald-400">LULUS</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-center gap-3">
+                    <button onclick="restartQuiz()" class="py-3 px-6 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> Coba Lagi
+                    </button>
+                    <button onclick="switchTab('materi')" class="py-3 px-6 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs uppercase tracking-wider transition-all border border-slate-700">
+                        <i class="fa-solid fa-book-open mr-1"></i> Pelajari Materi
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ================= TAB 6: GLOSARIUM ISTILAH ================= -->
+        <section id="view-glosarium" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest block mb-1">Kamus Istilah Jaringan</span>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-white">Glosarium Access Point</h2>
+                    </div>
+                    <div class="relative w-full md:w-64">
+                        <input type="text" id="glossarySearch" onkeyup="filterGlossary()" placeholder="Cari istilah..." class="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs outline-none focus:border-cyan-500">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+                    </div>
+                </div>
+
+                <div id="glossaryGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="glossary-item p-4 rounded-xl bg-slate-950 border border-slate-800">
+                        <h4 class="font-bold text-cyan-400 text-sm mb-1">SSID (Service Set Identifier)</h4>
+                        <p class="text-xs text-slate-400">Nama publik jaringan Wi-Fi yang dipancarkan oleh Access Point agar dapat ditemukan oleh perangkat pengguna.</p>
+                    </div>
+                    <div class="glossary-item p-4 rounded-xl bg-slate-950 border border-slate-800">
+                        <h4 class="font-bold text-cyan-400 text-sm mb-1">BSSID (Basic Service Set ID)</h4>
+                        <p class="text-xs text-slate-400">Alamat MAC unik fisik dari antena Access Point yang memancarkan sinyal Wi-Fi.</p>
+                    </div>
+                    <div class="glossary-item p-4 rounded-xl bg-slate-950 border border-slate-800">
+                        <h4 class="font-bold text-cyan-400 text-sm mb-1">PoE (Power over Ethernet)</h4>
+                        <p class="text-xs text-slate-400">Teknologi pengiriman daya listrik bersamaan dengan data melalui kabel LAN UTP/STP ke perangkat AP.</p>
+                    </div>
+                    <div class="glossary-item p-4 rounded-xl bg-slate-950 border border-slate-800">
+                        <h4 class="font-bold text-cyan-400 text-sm mb-1">WPA3 (Wi-Fi Protected Access 3)</h4>
+                        <p class="text-xs text-slate-400">Standar keamanan enkripsi nirkabel generasi terbaru yang lebih kuat terhadap serangan brute-force.</p>
+                    </div>
+                    <div class="glossary-item p-4 rounded-xl bg-slate-950 border border-slate-800">
+                        <h4 class="font-bold text-cyan-400 text-sm mb-1">Captive Portal</h4>
+                        <p class="text-xs text-slate-400">Halaman web login otentikasi yang muncul saat pengguna pertama kali terhubung ke jaringan Wi-Fi publik.</p>
+                    </div>
+                    <div class="glossary-item p-4 rounded-xl bg-slate-950 border border-slate-800">
+                        <h4 class="font-bold text-cyan-400 text-sm mb-1">Band Steering</h4>
+                        <p class="text-xs text-slate-400">Fitur cerdas AP yang mengarahkan perangkat client berkemampuan ganda otomatis ke frekuensi 5GHz yang lebih cepat.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Audio Synthesizer Engine using Web Audio API
+        let audioCtx = null;
+        let audioEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (!audioEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'click') {
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } else if (type === 'correct') {
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'wrong') {
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.setValueAtTime(180, now + 0.1);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } else if (type === 'ping') {
+                osc.frequency.setValueAtTime(880, now);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            }
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const icon = document.getElementById('audioIcon');
+            if (audioEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-cyan-400';
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-slate-500';
+            }
+        }
+
+        // Tab Switcher Logic
+        function switchTab(tabId) {
+            playSound('click');
+            const tabs = ['materi', 'mode', 'komparasi', 'simulasi', 'kuis', 'glosarium'];
+            tabs.forEach(t => {
+                const view = document.getElementById(`view-${t}`);
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tabId) {
+                    view.classList.remove('hidden');
+                    btn.className = 'tab-btn active px-3.5 py-2 rounded-lg transition-all flex items-center gap-2 bg-cyan-500 text-slate-950 font-bold';
+                } else {
+                    view.classList.add('hidden');
+                    btn.className = 'tab-btn px-3.5 py-2 rounded-lg transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800';
+                }
+            });
+
+            if (tabId === 'simulasi') {
+                initSimulationPositions();
+            }
+        }
+
+        // Mode Operasi Interactive Diagram Data
+        const modeData = {
+            ap: {
+                title: "Simulasi Mode: Access Point (AP Mode)",
+                badge: "Kabel LAN → Sinyal Wi-Fi",
+                titleExp: "Penjelasan Mode Access Point (AP Mode):",
+                descExp: "Mode standar di mana AP terhubung langsung ke jaringan LAN kabel melalui port Ethernet. AP bertindak sebagai pemancar utama Wi-Fi bagi semua client.",
+                nodes: [
+                    { icon: "fa-solid fa-globe", label: "Internet / Router", color: "text-amber-400" },
+                    { icon: "fa-solid fa-ethernet text-slate-600", type: "line-cable" },
+                    { icon: "fa-solid fa-tower-cell", label: "Access Point", color: "text-cyan-400" },
+                    { icon: "fa-solid fa-wifi text-cyan-400 animate-pulse", type: "line-wifi" },
+                    { icon: "fa-solid fa-laptop", label: "Wireless Client", color: "text-emerald-400" }
+                ]
+            },
+            repeater: {
+                title: "Simulasi Mode: Repeater / Range Extender",
+                badge: "Wi-Fi → Diperkuat → Wi-Fi",
+                titleExp: "Penjelasan Mode Repeater:",
+                descExp: "AP menangkap sinyal Wi-Fi dari Router utama secara nirkabel, lalu memancarkannya kembali dengan daya penuh untuk memperluas jangkauan tanpa kabel LAN tambahan.",
+                nodes: [
+                    { icon: "fa-solid fa-router", label: "Router Utama", color: "text-amber-400" },
+                    { icon: "fa-solid fa-wifi text-amber-400 animate-pulse", type: "line-wifi" },
+                    { icon: "fa-solid fa-tower-cell", label: "AP Repeater", color: "text-cyan-400" },
+                    { icon: "fa-solid fa-wifi text-cyan-400 animate-pulse", type: "line-wifi" },
+                    { icon: "fa-solid fa-mobile-screen-button", label: "Smartphone Client", color: "text-emerald-400" }
+                ]
+            },
+            bridge: {
+                title: "Simulasi Mode: Wireless Bridge Mode",
+                badge: "Menghubungkan 2 Gedung / LAN",
+                titleExp: "Penjelasan Mode Bridge:",
+                descExp: "Menggabungkan dua jaringan LAN kabel terpisah (misalnya antar dua gedung berbeda) menjadi satu subnet yang sama menggunakan koneksi radio nirkabel terdedikasi.",
+                nodes: [
+                    { icon: "fa-solid fa-building", label: "LAN Gedung A", color: "text-amber-400" },
+                    { icon: "fa-solid fa-tower-cell", label: "AP Bridge A", color: "text-cyan-400" },
+                    { icon: "fa-solid fa-arrows-left-right text-cyan-400 animate-pulse", type: "line-wifi" },
+                    { icon: "fa-solid fa-tower-cell", label: "AP Bridge B", color: "text-cyan-400" },
+                    { icon: "fa-solid fa-building", label: "LAN Gedung B", color: "text-emerald-400" }
+                ]
+            },
+            client: {
+                title: "Simulasi Mode: Wireless Client Mode",
+                badge: "Sinyal Wi-Fi → Port Kabel LAN",
+                titleExp: "Penjelasan Mode Client:",
+                descExp: "AP bertindak seolah-olah sebagai adapter nirkabel (Wi-Fi card) untuk perangkat non-WiFi seperti Smart TV atau PC Desktop melalui kabel Ethernet.",
+                nodes: [
+                    { icon: "fa-solid fa-wifi", label: "Wi-Fi Utama", color: "text-amber-400" },
+                    { icon: "fa-solid fa-wifi text-cyan-400 animate-pulse", type: "line-wifi" },
+                    { icon: "fa-solid fa-tower-cell", label: "AP Client Mode", color: "text-cyan-400" },
+                    { icon: "fa-solid fa-ethernet text-slate-600", type: "line-cable" },
+                    { icon: "fa-solid fa-tv", label: "Smart TV / PC", color: "text-emerald-400" }
+                ]
+            },
+            mesh: {
+                title: "Simulasi Mode: Mesh Network (Seamless Roaming)",
+                badge: "Jaringan Terintegrasi Otomatis",
+                titleExp: "Penjelasan Mode Mesh:",
+                descExp: "Beberapa Node AP saling berkomunikasi membentuk satu nama Wi-Fi (SSID) tunggal. Pengguna yang berjalan di gedung akan dialihkan otomatis (roaming) tanpa terputus.",
+                nodes: [
+                    { icon: "fa-solid fa-router", label: "Root Mesh Node", color: "text-amber-400" },
+                    { icon: "fa-solid fa-circle-nodes text-cyan-400 animate-pulse", type: "line-wifi" },
+                    { icon: "fa-solid fa-tower-cell", label: "Mesh Node 2", color: "text-cyan-400" },
+                    { icon: "fa-solid fa-circle-nodes text-cyan-400 animate-pulse", type: "line-wifi" },
+                    { icon: "fa-solid fa-tower-cell", label: "Mesh Node 3", color: "text-cyan-400" }
+                ]
+            }
+        };
+
+        function setOperationMode(modeKey) {
+            playSound('click');
+            // Active button styling
+            const btns = document.querySelectorAll('.mode-select-btn');
+            btns.forEach(b => {
+                b.className = 'mode-select-btn p-3 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 font-bold text-xs flex flex-col items-center gap-2 transition-all hover:border-slate-700 hover:text-white';
+            });
+            const activeBtn = document.getElementById(`mode-btn-${modeKey}`);
+            if (activeBtn) {
+                activeBtn.className = 'mode-select-btn p-3 rounded-xl border border-cyan-500 bg-cyan-500/10 text-cyan-300 font-bold text-xs flex flex-col items-center gap-2 transition-all';
+            }
+
+            const data = modeData[modeKey];
+            document.getElementById('modeDiagramTitle').innerText = data.title;
+            document.getElementById('modeDiagramBadge').innerText = data.badge;
+            document.getElementById('modeExpTitle').innerText = data.titleExp;
+            document.getElementById('modeExpDesc').innerText = data.descExp;
+
+            const canvas = document.getElementById('diagramCanvas');
+            canvas.innerHTML = '';
+
+            data.nodes.forEach(item => {
+                if (item.type === 'line-cable') {
+                    const line = document.createElement('div');
+                    line.className = 'flex-1 h-0.5 bg-slate-700 mx-2 relative';
+                    line.innerHTML = `<span class="absolute -top-3 left-1/2 -translate-x-1/2 text-[9px] font-mono text-slate-500">Kabel LAN</span>`;
+                    canvas.appendChild(line);
+                } else if (item.type === 'line-wifi') {
+                    const line = document.createElement('div');
+                    line.className = 'flex-1 flex justify-center text-xl text-cyan-400 animate-pulse mx-2';
+                    line.innerHTML = `<i class="${item.icon}"></i>`;
+                    canvas.appendChild(line);
+                } else {
+                    const node = document.createElement('div');
+                    node.className = 'flex flex-col items-center gap-2 text-center';
+                    node.innerHTML = `
+                        <div class="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-2xl shadow-lg ${item.color}">
+                            <i class="${item.icon}"></i>
+                        </div>
+                        <span class="text-xs font-bold text-slate-300">${item.label}</span>
+                    `;
+                    canvas.appendChild(node);
+                }
+            });
+        }
+
+        // Initialize mode diagram on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            setOperationMode('ap');
+        });
+
+        // Network Live Simulation Logic
+        let simState = {
+            band: "2.4",
+            power: 70,
+            hasWall: false,
+            apPos: { x: 100, y: 150 },
+            clientPos: { x: 380, y: 150 },
+            isDragging: false,
+            dragOffset: { x: 0, y: 0 }
+        };
+
+        function initSimulationPositions() {
+            const container = document.getElementById('simCanvasContainer');
+            if (!container) return;
+            const rect = container.getBoundingClientRect();
+            
+            simState.apPos = { x: 80, y: Math.floor(rect.height / 2) - 28 };
+            simState.clientPos = { x: Math.floor(rect.width) - 140, y: Math.floor(rect.height / 2) - 28 };
+
+            updateSimDOM();
+        }
+
+        function updateSimConfig() {
+            simState.band = document.getElementById('simBandSelect').value;
+            simState.power = parseInt(document.getElementById('simPowerRange').value, 10);
+            updateSimDOM();
+        }
+
+        function toggleWall() {
+            playSound('click');
+            simState.hasWall = !simState.hasWall;
+            const wallEl = document.getElementById('simWall');
+            const btnText = document.getElementById('wallStatusText');
+            
+            if (simState.hasWall) {
+                wallEl.classList.remove('hidden');
+                btnText.innerText = "Hapus Dinding Beton";
+                logConsole("[SIMULATION] Dinding beton dipasang di tengah ruangan.");
+            } else {
+                wallEl.classList.add('hidden');
+                btnText.innerText = "Tambah Dinding Beton";
+                logConsole("[SIMULATION] Dinding beton dihapus.");
+            }
+            updateSimDOM();
+        }
+
+        function updateSimDOM() {
+            const apEl = document.getElementById('deviceAP');
+            const clientEl = document.getElementById('deviceClient');
+            const circleEl = document.getElementById('wifiSignalCircle');
+
+            if (!apEl || !clientEl) return;
+
+            apEl.style.left = `${simState.apPos.x}px`;
+            apEl.style.top = `${simState.apPos.y}px`;
+
+            clientEl.style.left = `${simState.clientPos.x}px`;
+            clientEl.style.top = `${simState.clientPos.y}px`;
+
+            // Calculate signal radius based on power & band
+            let baseRadius = (simState.power / 100) * 320;
+            if (simState.band === "5") {
+                baseRadius *= 0.7; // 5GHz has shorter range
+            }
+
+            circleEl.style.width = `${baseRadius * 2}px`;
+            circleEl.style.height = `${baseRadius * 2}px`;
+            circleEl.style.left = `${simState.apPos.x + 28 - baseRadius}px`;
+            circleEl.style.top = `${simState.apPos.y + 28 - baseRadius}px`;
+
+            // Calculate Distance and Signal dBm
+            const dx = (simState.clientPos.x) - (simState.apPos.x);
+            const dy = (simState.clientPos.y) - (simState.apPos.y);
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            let rssi = -30 - Math.floor(distance / 6);
+            if (simState.band === "5") rssi -= 10;
+            if (simState.hasWall && isClientBehindWall()) {
+                rssi -= 22; // Wall attenuation
+            }
+
+            rssi = Math.max(-95, Math.min(-30, rssi));
+
+            // Signal bar display
+            const bar = document.getElementById('signalIndicatorBar');
+            const text = document.getElementById('signalText');
+
+            let qualityPct = Math.max(0, Math.min(100, Math.floor(((rssi + 95) / 65) * 100)));
+            bar.style.width = `${qualityPct}%`;
+            text.innerText = `${rssi} dBm (${qualityPct}%)`;
+
+            if (qualityPct > 65) {
+                bar.className = 'h-4 bg-emerald-500 rounded transition-all';
+                text.className = 'text-emerald-400 font-bold';
+            } else if (qualityPct > 35) {
+                bar.className = 'h-4 bg-amber-500 rounded transition-all';
+                text.className = 'text-amber-400 font-bold';
+            } else {
+                bar.className = 'h-4 bg-rose-500 rounded transition-all';
+                text.className = 'text-rose-400 font-bold';
+            }
+        }
+
+        function isClientBehindWall() {
+            const container = document.getElementById('simCanvasContainer');
+            if (!container) return false;
+            const midX = container.clientWidth / 2;
+            return (simState.apPos.x < midX && simState.clientPos.x > midX) || 
+                   (simState.apPos.x > midX && simState.clientPos.x < midX);
+        }
+
+        function logConsole(msg) {
+            const consoleEl = document.getElementById('simConsole');
+            if (!consoleEl) return;
+            const div = document.createElement('div');
+            div.innerText = msg;
+            consoleEl.appendChild(div);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        // Dragging Event Listeners for Client
+        const clientDeviceEl = document.getElementById('deviceClient');
+        if (clientDeviceEl) {
+            clientDeviceEl.addEventListener('mousedown', (e) => {
+                simState.isDragging = true;
+                simState.dragOffset = {
+                    x: e.clientX - simState.clientPos.x,
+                    y: e.clientY - simState.clientPos.y
+                };
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!simState.isDragging) return;
+                const container = document.getElementById('simCanvasContainer');
+                const rect = container.getBoundingClientRect();
+                
+                let newX = e.clientX - rect.left - simState.dragOffset.x;
+                let newY = e.clientY - rect.top - simState.dragOffset.y;
+
+                newX = Math.max(10, Math.min(rect.width - 60, newX));
+                newY = Math.max(10, Math.min(rect.height - 60, newY));
+
+                simState.clientPos = { x: newX, y: newY };
+                updateSimDOM();
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (simState.isDragging) {
+                    simState.isDragging = false;
+                    logConsole(`[CLIENT] Perangkat dipindahkan ke posisi X:${Math.round(simState.clientPos.x)}, Y:${Math.round(simState.clientPos.y)}.`);
+                }
+            });
+        }
+
+        function triggerPingTest() {
+            playSound('ping');
+            const packet = document.getElementById('pingPacket');
+            if (!packet) return;
+
+            packet.classList.remove('hidden');
+            let startX = simState.apPos.x + 28;
+            let startY = simState.apPos.y + 28;
+            let endX = simState.clientPos.x + 28;
+            let endY = simState.clientPos.y + 28;
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 0.05;
+                const currX = startX + (endX - startX) * progress;
+                const currY = startY + (endY - startY) * progress;
+
+                packet.style.left = `${currX}px`;
+                packet.style.top = `${currY}px`;
+
+                if (progress >= 1) {
+                    clearInterval(interval);
+                    packet.classList.add('hidden');
+                    playSound('correct');
+                    logConsole(`[PING TEST] Reply from Client: bytes=32 time=${isClientBehindWall() && simState.hasWall ? '48ms' : '2ms'} TTL=64`);
+                }
+            }, 20);
+        }
+
+        function resetSimulation() {
+            playSound('click');
+            initSimulationPositions();
+            logConsole("[SIMULATION] Posisi perangkat telah direset ke kondisi awal.");
+        }
+
+        // Kuis Data & Logic
+        const quizQuestions = [
+            {
+                q: "Apa fungsi utama dari perangkat Access Point dalam jaringan komputer?",
+                options: [
+                    "Menghubungkan dua subnet jaringan yang berbeda dengan NAT",
+                    "Memancarkan sinyal gelombang radio Wi-Fi untuk menghubungkan perangkat nirkabel ke LAN kabel",
+                    "Menyimpan cache halaman website agar akses internet lebih cepat",
+                    "Memproteksi jaringan komputer dari virus dan malware secara internal"
+                ],
+                correct: 1,
+                exp: "Fungsi utama Access Point adalah memancarkan sinyal Wi-Fi untuk menyambungkan perangkat nirkabel (laptop/smartphone) ke jaringan kabel lokal (LAN)."
+            },
+            {
+                q: "Di manakah letak pengoperasian Access Point murni berdasarkan model OSI Layer?",
+                options: [
+                    "Layer 1 (Physical Layer)",
+                    "Layer 2 (Data Link Layer)",
+                    "Layer 3 (Network Layer)",
+                    "Layer 7 (Application Layer)"
+                ],
+                correct: 1,
+                exp: "Access Point murni bekerja pada Layer 2 (Data Link Layer) karena bertindak sebagai bridge nirkabel tanpa melakukan routing antar-subnet."
+            },
+            {
+                q: "Manakah fitur yang dimiliki Wireless Router tetapi TIDAK ada pada Access Point murni secara default?",
+                options: [
+                    "Memancarkan SSID Wi-Fi",
+                    "Server DHCP & NAT (Network Address Translation)",
+                    "Dukungan enkripsi sandi WPA2",
+                    "Antena pemancar sinyal radio"
+                ],
+                correct: 1,
+                exp: "Wireless Router dilengkapi Server DHCP, NAT, dan firewall layer 3, sedangkan AP murni hanya melalukan (pass-through) paket tanpa NAT."
+            },
+            {
+                q: "Mode operasi AP yang digunakan untuk memperluas jangkauan Wi-Fi tanpa menggunakan kabel LAN tambahan adalah...",
+                options: [
+                    "Access Point Mode",
+                    "Repeater / Extender Mode",
+                    "Client Mode",
+                    "Bridge Mode"
+                ],
+                correct: 1,
+                exp: "Repeater Mode menangkap sinyal Wi-Fi dari AP/Router utama secara nirkabel lalu memancarkannya kembali untuk memperluas jangkauan."
+            },
+            {
+                q: "Mode AP yang berfungsi menghubungkan dua jaringan LAN kabel terpisah (misalnya antar dua gedung) secara nirkabel adalah...",
+                options: [
+                    "Mesh Mode",
+                    "Bridge Mode",
+                    "Client Mode",
+                    "Standalone Mode"
+                ],
+                correct: 1,
+                exp: "Bridge Mode menghubungkan dua segmen jaringan kabel yang terpisah geografis menggunakan link radio nirkabel."
+            },
+            {
+                q: "Istilah untuk pengiriman daya listrik dan data sekaligus melalui satu kabel LAN Ethernet ke Access Point dinamakan...",
+                options: [
+                    "PoE (Power over Ethernet)",
+                    "SSID (Service Set Identifier)",
+                    "BSSID",
+                    "DNS Relay"
+                ],
+                correct: 0,
+                exp: "PoE (Power over Ethernet) memungkinkan perangkat AP menyala tanpa perlu ketersediaan stopkontak listrik terpisah di plafon."
+            },
+            {
+                q: "Apa keunggulan utama frekuensi Wi-Fi 5 GHz dibandingkan frekuensi 2.4 GHz?",
+                options: [
+                    "Jangkauan sinyal jauh lebih luas dan menembus tembok tebal",
+                    "Kecepatan transfer data lebih tinggi dan minim interferensi gelombang",
+                    "Dapat digunakan oleh smartphone lama tanpa dukungan dual-band",
+                    "Mengkonsumsi daya listrik yang jauh lebih hemat"
+                ],
+                correct: 1,
+                exp: "Frekuensi 5GHz menyediakan bandwidth jauh lebih tinggi dan saluran yang lebih bersih dari interferensi, meskipun jangkauannya lebih pendek."
+            },
+            {
+                q: "Jenis Access Point yang dirancang khusus dengan sertifikasi tahan air dan debu untuk ruang terbuka adalah...",
+                options: [
+                    "Indoor Access Point",
+                    "Outdoor Access Point",
+                    "Fat AP",
+                    "Desktop AP"
+                ],
+                correct: 1,
+                exp: "Outdoor AP menggunakan casing weatherproof (IP67) agar tahan cuaca hujan, panas matahari, dan debu lingkungan luar."
+            },
+            {
+                q: "Apa nama fitur yang memungkinkan pengguna berpindah dari satu AP ke AP lain di gedung besar tanpa koneksi terputus?",
+                options: [
+                    "Seamless Roaming",
+                    "MAC Filtering",
+                    "Static Routing",
+                    "Port Forwarding"
+                ],
+                correct: 0,
+                exp: "Seamless Roaming memungkinkan perpindahan antarsinyal AP secara cepat dan tidak terputus (zero-handoff)."
+            },
+            {
+                q: "Pengelolaan puluhan Access Point secara terpusat dalam satu dashboard enterprise umumnya menggunakan tipe...",
+                options: [
+                    "Standalone AP",
+                    "Controller Managed AP (Fit AP)",
+                    "Peer-to-Peer AP",
+                    "Manual Web AP"
+                ],
+                correct: 1,
+                exp: "Controller Managed AP dikendalikan oleh unit hardware controller atau cloud terpusat sehingga konfigurasi ratusan AP bisa dilakukan sekaligus."
+            }
+        ];
+
+        let quizState = {
+            playerName: "Siswa",
+            currentIndex: 0,
+            score: 0,
+            isAnswered: false
+        };
+
+        function startQuiz() {
+            playSound('click');
+            const nameInput = document.getElementById('quizPlayerName').value.trim();
+            if (nameInput) {
+                quizState.playerName = nameInput;
+            }
+
+            quizState.currentIndex = 0;
+            quizState.score = 0;
+
+            document.getElementById('quizStartScreen').classList.add('hidden');
+            document.getElementById('quizResultScreen').classList.add('hidden');
+            document.getElementById('quizPlayScreen').classList.remove('hidden');
+
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            quizState.isAnswered = false;
+            const q = quizQuestions[quizState.currentIndex];
+
+            document.getElementById('quizProgressTag').innerText = `Soal #${quizState.currentIndex + 1} / ${quizQuestions.length}`;
+            document.getElementById('quizScoreTag').innerText = `Skor: ${quizState.score}`;
+            document.getElementById('quizQuestionPrompt').innerText = q.q;
+
+            document.getElementById('quizFeedbackBox').classList.add('hidden');
+
+            const container = document.getElementById('quizOptionsContainer');
+            container.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-cyan-500 text-left font-medium text-xs md:text-sm text-slate-200 transition-all flex items-center justify-between group';
+                btn.onclick = () => answerQuiz(idx, btn);
+                btn.innerHTML = `
+                    <span>${opt}</span>
+                    <i class="fa-regular fa-circle text-slate-600 group-hover:text-cyan-400"></i>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function answerQuiz(selectedIdx, btnEl) {
+            if (quizState.isAnswered) return;
+            quizState.isAnswered = true;
+
+            const q = quizQuestions[quizState.currentIndex];
+            const isCorrect = (selectedIdx === q.correct);
+
+            const container = document.getElementById('quizOptionsContainer');
+            const buttons = container.querySelectorAll('button');
+
+            buttons.forEach((b, idx) => {
+                b.disabled = true;
+                if (idx === q.correct) {
+                    b.className = 'w-full p-4 rounded-xl bg-emerald-950/80 border-2 border-emerald-500 text-left font-medium text-xs md:text-sm text-emerald-200 flex items-center justify-between';
+                    b.querySelector('i').className = 'fa-solid fa-circle-check text-emerald-400';
+                } else if (b === btnEl && !isCorrect) {
+                    b.className = 'w-full p-4 rounded-xl bg-rose-950/80 border-2 border-rose-500 text-left font-medium text-xs md:text-sm text-rose-200 flex items-center justify-between';
+                    b.querySelector('i').className = 'fa-solid fa-circle-xmark text-rose-400';
+                } else {
+                    b.className = 'w-full p-4 rounded-xl bg-slate-950/40 border border-slate-800/40 text-left font-medium text-xs md:text-sm text-slate-600 flex items-center justify-between opacity-50';
+                }
+            });
+
+            const feedbackBox = document.getElementById('quizFeedbackBox');
+            const feedbackTitle = document.getElementById('quizFeedbackTitle');
+            const feedbackBody = document.getElementById('quizFeedbackBody');
+
+            feedbackBox.classList.remove('hidden');
+
+            if (isCorrect) {
+                playSound('correct');
+                quizState.score += 10;
+                feedbackBox.className = 'p-4 rounded-xl border border-emerald-500/30 bg-emerald-950/30 text-xs leading-relaxed space-y-1';
+                feedbackTitle.className = 'font-bold text-emerald-400 text-sm';
+                feedbackTitle.innerText = "Jawaban Kamu Tepat!";
+            } else {
+                playSound('wrong');
+                feedbackBox.className = 'p-4 rounded-xl border border-rose-500/30 bg-rose-950/30 text-xs leading-relaxed space-y-1';
+                feedbackTitle.className = 'font-bold text-rose-400 text-sm';
+                feedbackTitle.innerText = "Jawaban Belum Tepat!";
+            }
+
+            feedbackBody.innerText = q.exp;
+            document.getElementById('quizScoreTag').innerText = `Skor: ${quizState.score}`;
+        }
+
+        function nextQuizQuestion() {
+            playSound('click');
+            quizState.currentIndex++;
+            if (quizState.currentIndex >= quizQuestions.length) {
+                endQuiz();
+            } else {
+                renderQuizQuestion();
+            }
+        }
+
+        function endQuiz() {
+            document.getElementById('quizPlayScreen').classList.add('hidden');
+            document.getElementById('quizResultScreen').classList.remove('hidden');
+
+            document.getElementById('quizResultGreeting').innerText = `Hebat sekali, ${quizState.playerName}! Sesi evaluasi telah selesai.`;
+            document.getElementById('quizFinalScore').innerText = quizState.score;
+
+            const status = document.getElementById('quizStatusText');
+            if (quizState.score >= 70) {
+                status.innerText = "SANGAT BAIK / LULUS";
+                status.className = 'font-mono text-2xl font-black text-emerald-400';
+            } else {
+                status.innerText = "PERLU REVISI MATERI";
+                status.className = 'font-mono text-2xl font-black text-amber-400';
+            }
+        }
+
+        function restartQuiz() {
+            playSound('click');
+            startQuiz();
+        }
+
+        // Glossary Search Filter
+        function filterGlossary() {
+            const query = document.getElementById('glossarySearch').value.toLowerCase();
+            const items = document.querySelectorAll('.glossary-item');
+
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
